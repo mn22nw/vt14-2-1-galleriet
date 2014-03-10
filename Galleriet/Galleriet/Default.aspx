@@ -13,7 +13,13 @@
         <p>Välj en fil att ladda upp</p>
 
         <asp:FileUpload ID="imgUpload" runat="server" />
-
+        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+            ErrorMessage="Du måste ange en sökväg" CssClass="error" 
+            ControlToValidate="imgUpload" SetFocusOnError="True" Text="*" Display="Dynamic"></asp:RequiredFieldValidator>
+        <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
+            ControlToValidate="imgUpload" SetFocusOnError="True" Text="*" Display="Dynamic" CssClass="error" 
+            ErrorMessage="Filen har inte rätt filformat!" ValidationExpression="^.*\.(gif|jpg|png)$"></asp:RegularExpressionValidator>
+        
         <asp:Button ID="UploadButton" runat="server" Text="Ladda upp" />
         <asp:Repeater ID="FileRepeater" runat="server" ItemType="DataboundFiles.Model.Gallery" SelectMethod="FileRepeater_GetData">
             <HeaderTemplate>
@@ -21,9 +27,9 @@
             </HeaderTemplate>
             <ItemTemplate>
                 <li>
-                    <asp:HyperLink ID="HyperLink1" runat="server" 
-                        Text=" <%# Item.Name %>" NavigateUrl='<%# "~/Content/files" +Item.Name %>'
-                        CssClass=" <%# Item.Class %>" />                 
+                    <%-- <asp:HyperLink ID="HyperLink1" runat="server" Text="<%# Item.Name %>" 
+                        NavigateUrl="<%# "~/Content/files" +Item.Name %>"
+                        CssClass=" <%# Item.Class %>" />    --%>          
                 </li>
             </ItemTemplate>
             <FooterTemplate>

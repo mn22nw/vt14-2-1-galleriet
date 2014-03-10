@@ -88,13 +88,18 @@ namespace Galleriet.Model
                string withoutE = Path.GetFileNameWithoutExtension(fileName);
                string withE = Path.GetExtension(fileName);
 
-               fileName = withoutE + 1 + withE;  
+
+            string[] files = Directory.GetFiles("~/Content/files");
+            int count = files.Count(file => { return file.Contains(fileName); });
+ 
+                if(count > 0)
+                 fileName = String.Format("{0}({1}){2}", withoutE, count + 1, withE);
+
             }
 
-
-            Image image = Image.FromFile(fileName);
-            Image thumb = image.GetThumbnailImage(120, 120, () => false, IntPtr.Zero);
-            thumb.Save(Path.ChangeExtension(fileName, "thumb"));
+            Image image = System.Drawing.Image.FromStream(stream); // stream -> ström med bild
+            Image thumbnail = image.GetThumbnailImage(60, 45, null, System.IntPtr.Zero);
+            thumbnail.Save("~/Content/files/thumbs/" + fileName + "thumb");
 
 
             return "hej";

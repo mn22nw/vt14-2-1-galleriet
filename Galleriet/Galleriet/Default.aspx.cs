@@ -11,6 +11,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
 using System.IO;
+using Galleriet.Model;
 
 
 public partial class Default : System.Web.UI.Page
@@ -24,6 +25,23 @@ public partial class Default : System.Web.UI.Page
             Directory.CreateDirectory("C:\\UploadedUserFiles\\");
         }
     }
+
+    public Gallery Gallery
+    {
+        get
+        {
+            return Session["Gallery"] as Gallery;
+        }
+        set
+        {
+            Session["Gallery"] = value;
+        }
+    }
+    protected void FileRepeater_GetData(object sender, EventArgs e)
+    {
+        Gallery.GetImageNames();
+    }
+   
     protected void UploadButton_Click(object sender, EventArgs e)
     {   
       //uploadDetails.visible=true;
