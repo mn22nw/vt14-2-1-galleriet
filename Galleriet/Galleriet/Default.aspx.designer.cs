@@ -49,13 +49,22 @@ namespace Galleriet {
         protected global::System.Web.UI.WebControls.Repeater FileRepeater;
         
         /// <summary>
+        /// uploadDetails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl uploadDetails;
+        
+        /// <summary>
         /// fileName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl fileName;
+        protected global::System.Web.UI.WebControls.Label fileName;
         
         /// <summary>
         /// fileContent control.
@@ -64,7 +73,7 @@ namespace Galleriet {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl fileContent;
+        protected global::System.Web.UI.WebControls.Label fileContent;
         
         /// <summary>
         /// fileSize control.
@@ -73,6 +82,6 @@ namespace Galleriet {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl fileSize;
+        protected global::System.Web.UI.WebControls.Label fileSize;
     }
 }

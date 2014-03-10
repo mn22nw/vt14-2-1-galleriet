@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Galleriet.Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Default" ViewStateMode="Disabled" %>
 
 <!DOCTYPE html>
 
@@ -8,11 +8,11 @@
 </head>
 <body>
     <form id="FormFileUpload" runat="server">
-    <div>
+    <div id="test">
         <h1>Galleriet</h1>
         <p>Välj en fil att ladda upp</p>
 
-        <asp:FileUpload ID="imgUpload" runat="server" Size="60" />
+        <asp:FileUpload ID="imgUpload" runat="server" />
 
         <asp:Button ID="UploadButton" runat="server" Text="Ladda upp" />
         <asp:Repeater ID="FileRepeater" runat="server" ItemType="DataboundFiles.Model.Gallery" SelectMethod="FileRepeater_GetData">
@@ -31,10 +31,10 @@
             </FooterTemplate>
         </asp:Repeater>
     </div>
-    <div id="uploadDetails" visible="false">
-        <p>Filnamn </p> <span id="fileName" runat="server"></span>
-        <p>Fildata </p> <span id="fileContent" runat="server"></span>
-        <p>Filstorlek </p> <span id="fileSize" runat="server"></span>
+    <div id="uploadDetails" runat="Server" >
+        <asp:Label ID="fileName" runat="server" Text="Filnamn"></asp:Label>
+        <asp:Label ID="fileContent" runat="server" Text="Filtyp"></asp:Label>
+        <asp:Label ID="fileSize" runat="server" Text="Filstorlek"></asp:Label>
     </div>
     </form>
 </body>
