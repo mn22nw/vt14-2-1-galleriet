@@ -1,0 +1,5 @@
+C:\Users\Mia\Desktop\ASP.NET\Labb 2.1\vt14-2-1-galleriet-master\Galleriet\Galleriet\bin\Galleriet.dll
+C:\Users\Mia\Desktop\ASP.NET\Labb 2.1\vt14-2-1-galleriet-master\Galleriet\Galleriet\bin\Galleriet.pdb
+C:\Users\Mia\Desktop\ASP.NET\Labb 2.1\vt14-2-1-galleriet-master\Galleriet\Galleriet\obj\Debug\Galleriet.dll
+C:\Users\Mia\Desktop\ASP.NET\Labb 2.1\vt14-2-1-galleriet-master\Galleriet\Galleriet\obj\Debug\Galleriet.pdb
+C:\Users\Mia\Desktop\ASP.NET\Labb 2.1\vt14-2-1-galleriet-master\Galleriet\Galleriet\obj\Debug\Galleriet.csprojResolveAssemblyReference.cache

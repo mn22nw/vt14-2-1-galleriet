@@ -6,50 +6,42 @@ using System.Web.UI;
 using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Web.UI.HtmlControls;
+using System.Diagnostics;
 
 
 namespace Galleriet.Model
-{   
+{
     public class Gallery
     {
-       
-        private Regex ApprovedExtensions;
-        private String physicalUplodedImagesPath;  // är en privat statisk sträng som innehåller den fysiska sökvägen till 
-                                                // katalogen där uppladdade filer sparas.
-        static string invalidChars = new string(Path.GetInvalidFileNameChars());
-        private Regex SanitizePath = new Regex(string.Format("[{0}]", Regex.Escape(invalidChars)));
-        //För att sedan ersätta otillåtna tecken använd metoden Regex.Replace().
-        //Fältet initieras i den statiska konstruktorn.
-      
-        public string Name { get; set; }
-        public string Class { get; set; }
 
-       
-        private Gallery()
+        private Regex ApprovedExtensions;
+        private String physicalUplodedImagesPath; 
+        static string invalidChars = new string(Path.GetInvalidFileNameChars());
+        private Regex SanitizePath; 
+
+        public Gallery()
         {
-            ApprovedExtensions = new Regex("(.gif|.jpg|.png)", RegexOptions.IgnoreCase);
-            physicalUplodedImagesPath = Path.Combine(AppDomain.CurrentDomain.GetData("APPBASE").ToString(),"~/Content/files");
+            ApprovedExtensions = new Regex("(.gif|.jpg|.jpeg|.png)", RegexOptions.IgnoreCase);
+
+            physicalUplodedImagesPath = Path.Combine(AppDomain.CurrentDomain.GetData("APPBASE").ToString(), "Content\\files\\");
+
+            SanitizePath = new Regex(string.Format("[{0}]", Regex.Escape(invalidChars)));
+            //För att sedan ersätta otillåtna tecken använd metoden Regex.Replace().
         }
 
         public IEnumerable<string> GetImageNames()
         {
-            /*  GetImagesNames returnerar en referens av typen IEnumerable<string> till ett List-objekt 
-                innehållande bildernas filnamn sorterade i bokstavsordning. Klassen DirectoryInfo med metoden 
-                GetFiles är användbar. Det kan vara en god idé att se till att bara filer med filändelserna gif, jpg och 
-                png finns i listan.*/
-            DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~/Content/files"));
-
+            DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~/Content/files/"));
             IEnumerable<string> imagesOrdered = di.GetFiles().Select(file => file.Name).OrderBy(item => item);
 
             return imagesOrdered;
         }
-               //namndeklarationen på variablen som används i "loopen"
-     
 
         public bool ImageExists(string name)
         {
-
-            if (File.Exists(name))
+            Debug.WriteLine(physicalUplodedImagesPath + name);
+            if (File.Exists(physicalUplodedImagesPath + name))
             {
                 return true;
             }
@@ -57,53 +49,75 @@ namespace Galleriet.Model
             return false;
         }
 
-        private bool IsValidImage(Image image)
+        private bool IsValidImage(Image image, string fileName)
         {
+            string extension = Path.GetExtension(fileName);
+            Gallery getRegex = new Gallery();
+           
+            Match match = getRegex.ApprovedExtensions.Match(extension);
+            //http://www.dotnetperls.com/static-regex
+            if (match.Success)
+                return true;
+           
             if (image.RawFormat.Guid == System.Drawing.Imaging.ImageFormat.Gif.Guid ||
                 image.RawFormat.Guid == System.Drawing.Imaging.ImageFormat.Jpeg.Guid || image.RawFormat.Guid == System.Drawing.Imaging.ImageFormat.Png.Guid)
                 return true;
 
             else
                 return false;
-            // Create image.
-         //   Image newImage = Image.FromFile("SampImag.jpg");
-
-            // Create Point for upper-left corner of image.
-          //  Point ulCorner = new Point(100, 100);
-
-            // Draw image to screen.
-           // e.Graphics.DrawImage(newImage, ulCorner);
-         
         }
 
-        public string SaveImage(Stream stream, string fileName)
-        {   
+        public string[] SaveImage(Stream stream, string fileName)
+        {
+            fileName = SanitizePath.Replace(fileName, "1");
 
-            if (!ImageExists(fileName))
-                throw new ArgumentException("Filen är inte rätt filformat!");
+            string[] SuccessMessages = new string[2];
+            SuccessMessages[0] = "Bilden '" + fileName + "' har sparats!"; 
 
-            if(ImageExists(fileName))
+            try
             {
-               
+                if (!IsValidImage(Image.FromStream(stream), fileName)) //verifierar att filen är av rätt MIME-typ
+                {
+                    Debug.WriteLine("miipuu");
+                    throw new ArgumentException("Filen är inte rätt filformat!");
+                }
+            }
+            catch
+            {
+                throw new ArgumentException("Filen är inte rätt filformat!");
+            }
+
+
+            if (ImageExists(fileName)) // säkerställer att filnamnet är unikt
+            {
+               string tempfileName = "";
                string withoutE = Path.GetFileNameWithoutExtension(fileName);
                string withE = Path.GetExtension(fileName);
 
+			   int counter = 1;
 
-            string[] files = Directory.GetFiles("~/Content/files");
-            int count = files.Count(file => { return file.Contains(fileName); });
- 
-                if(count > 0)
-                 fileName = String.Format("{0}({1}){2}", withoutE, count + 1, withE);
+			        while (ImageExists(fileName))
+			        { 
+				        tempfileName = withoutE + "(" + counter.ToString() + ")" + withE;
+				        fileName = physicalUplodedImagesPath + tempfileName;
+				        counter++;
+			        }
+			        fileName = tempfileName;
+                    SuccessMessages[0] = "En fil med samma namn fanns redan." + "<br />Filen sparade som " + fileName +".";
+                   
+		        }
+            SuccessMessages[1] = fileName;
 
-            }
+            Image image = Image.FromStream(stream);
+            image.Save(HttpContext.Current.Server.MapPath("~/Content/files/" + fileName));
+            
 
-            Image image = System.Drawing.Image.FromStream(stream); // stream -> ström med bild
-            Image thumbnail = image.GetThumbnailImage(60, 45, null, System.IntPtr.Zero);
-            thumbnail.Save("~/Content/files/thumbs/" + fileName + "thumb");
+            //**GENERATE THUMBNAIL**//
+            Image thumbnail = image.GetThumbnailImage(120, 90, null, System.IntPtr.Zero);
+            thumbnail.Save(HttpContext.Current.Server.MapPath("~/Content/files/thumbs/" + "thumb" + fileName ));
+            stream.Close();
 
-
-            return "hej";
+            return SuccessMessages; 
         }
-
     }
 }

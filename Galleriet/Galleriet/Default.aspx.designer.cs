@@ -21,40 +21,31 @@ public partial class Default {
     protected global::System.Web.UI.HtmlControls.HtmlForm FormFileUpload;
     
     /// <summary>
-    /// imgUpload control.
+    /// successMessage control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.FileUpload imgUpload;
+    protected global::System.Web.UI.HtmlControls.HtmlGenericControl successMessage;
     
     /// <summary>
-    /// RequiredFieldValidator1 control.
+    /// Label1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
+    protected global::System.Web.UI.WebControls.Label Label1;
     
     /// <summary>
-    /// RegularExpressionValidator1 control.
+    /// bigImage control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator1;
-    
-    /// <summary>
-    /// UploadButton control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Button UploadButton;
+    protected global::System.Web.UI.HtmlControls.HtmlImage bigImage;
     
     /// <summary>
     /// FileRepeater control.
@@ -66,38 +57,38 @@ public partial class Default {
     protected global::System.Web.UI.WebControls.Repeater FileRepeater;
     
     /// <summary>
-    /// uploadDetails control.
+    /// ValidationSummary1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlGenericControl uploadDetails;
+    protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummary1;
     
     /// <summary>
-    /// fileName control.
+    /// FileUpload1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label fileName;
+    protected global::System.Web.UI.WebControls.FileUpload FileUpload1;
     
     /// <summary>
-    /// fileContent control.
+    /// RequiredFieldValidator1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label fileContent;
+    protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
     
     /// <summary>
-    /// fileSize control.
+    /// UploadBtn control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label fileSize;
+    protected global::System.Web.UI.WebControls.Button UploadBtn;
 }
