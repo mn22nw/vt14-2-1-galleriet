@@ -59,11 +59,6 @@
                          <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
                             ControlToValidate="FileUpload1" SetFocusOnError="True" Text="*" Display="Dynamic" CssClass="error" 
                             ErrorMessage="Filen har inte rätt filformat!" ValidationExpression="^.*\.((j|J)(p|P)(e|E)?(g|G)|(g|G)(i|I)(f|F)|(p|P)(n|N)(g|G))$"></asp:RegularExpressionValidator>
-                         <asp:CustomValidator ID="FileCustomValidator" runat="server"  
-                            Text="*" Display="Dynamic"
-                            ErrorMessage="Filstorleken är för stor. Var vänlig ladda upp en fil mindre än 4MB." 
-                            ControlToValidate="FileUpload1"  
-                            ClientValidationFunction = "checkfilesize"> </asp:CustomValidator>
                        <asp:Button id="UploadBtn" 
                                 Text="Ladda upp" OnClick="UploadButton_Click"  
                                 runat="server"> </asp:Button>    
@@ -74,27 +69,45 @@
         </div>
     </div>
     <script type="text/javascript">
+       
+        function correctNumber(number){
+            return number;
+        }
 
+        //Scrollar tillbaka till senast klickade tumnagelbild och markerar den
+        function SelectAnScrollToThumbNail() {
+
+            var $imgSrc = $('#bigImage').attr("src");
+
+            var a = document.querySelectorAll("#allThumbs a");
+
+            for ($i = 0; $i < a.length; $i++) {
+
+                $n = $imgSrc.split("/");
+                $fn = $n[$n.length - 1];
+
+                var href = a[$i].href;
+                var name = href.split("=");
+                var fileName = name[1];
+
+                //för att $i ska få rätt värde i if satsen kör den via correctNumber()
+                var number = correctNumber($i);
+
+                if (fileName === $fn) {
+                    console.log(href);
+                    console.log(a[number]);
+                    thumbnail = a[number].querySelector("img");
+                    thumbnail.id = "selectedThumbnail";
+
+                    //scrolla till vald bild i div-en
+                    $("#allThumbs").scrollLeft((number * 100));
+                }
+            }
+        }
 
         $(document).ready(function () {
-
-            //Scrollar tillbaka till senast klickade tumnagelbild   //TODO - Fungerar ej just nu
-            $('#allThumbs a').click(function () {
-
-                var id = this.getAttribute("id");
-                var container = $('#allThumbs'),
-                scrollTo = $(id);
-                console.log(container.children + "Test");
-
-
-           // window.location.hash = $(this).attr('alt');
-            });
-
-            $('#exit').click(function () {
-                $('#successMessage').css("display", "none");
-            });
-
-            window.scrollTo = function () { };
+            
+            SelectAnScrollToThumbNail();
 
             $('#ValidationSummary1').onpropertychange = function () {
                 if (this.style.display != 'none') {
@@ -102,10 +115,13 @@
                 }
             }
 
+            //stänger successmeddelandet (används denna ens?)
+            $('#exit').click(function () {
+                $('#successMessage').css("display", "none");
+            });
+
             //Gömmer img-ikonen som syns när bilden laddas annars.
             $("img").error(function () { $(this).hide(); });
-
-
     });
 </script>
 </body>

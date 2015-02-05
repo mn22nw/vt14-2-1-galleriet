@@ -22,6 +22,9 @@
     margin-bottom: 0;
 }
 
+#selectedThumbnail {
+    border: 3px solid yellow !important;
+}
 .validation-summary-errors {
      font-weight: bold;
     border: 2px solid gray;
@@ -95,6 +98,10 @@ img {
     overflow-y:hidden;
     overflow-x:scroll;
     margin-bottom:15px;
+}
+
+#allThumbs img {
+     border: 3px solid #FFF;
 }
 #fileUpload {
    display:block;
