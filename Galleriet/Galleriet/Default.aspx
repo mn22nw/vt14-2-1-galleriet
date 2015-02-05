@@ -75,29 +75,19 @@
     </div>
     <script type="text/javascript">
 
-     function setStartImage() {
-
-            var attr = $(this).attr('src');
-
-            // i vissa webbläsare är 'attr' undefined och andra är det false, så kolla för båda! 
-            if (typeof attr === typeof undefined || attr === false) {
-
-                var bigImageStartPath = "Content/files/" + $('li').children().first().attr('alt');
-                console.log(bigImageStartPath);
-                $('#bigImage').attr('src', bigImageStartPath);
-            }
-
-        };
 
         $(document).ready(function () {
 
-            //sätter stora bilden till den fösrta bilden bland de uppladdade filerna (om det finns några)
-           // setStartImage();
+            //Scrollar tillbaka till senast klickade tumnagelbild   //TODO - Fungerar ej just nu
+            $('#allThumbs a').click(function () {
 
-            $('#ImageGallery img').click(function () {  
-            var bigImagePath = "Content/files/" + $(this).attr('alt');
-            $('#bigImage').attr('src', bigImagePath);
-            window.location.hash = $(this).attr('alt');
+                var id = this.getAttribute("id");
+                var container = $('#allThumbs'),
+                scrollTo = $(id);
+                console.log(container.children + "Test");
+
+
+           // window.location.hash = $(this).attr('alt');
             });
 
             $('#exit').click(function () {
@@ -111,6 +101,10 @@
                     validationSummary.scrollIntoView();
                 }
             }
+
+            //Gömmer img-ikonen som syns när bilden laddas annars.
+            $("img").error(function () { $(this).hide(); });
+
 
     });
 </script>

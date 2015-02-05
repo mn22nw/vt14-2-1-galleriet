@@ -113,7 +113,6 @@ namespace Galleriet.Model
             //Säkerställ att filnamnet är unikt 
             fileName = renameFileIfExists(fileName);
 
-
             Image image = Image.FromStream(stream);
             image.Save(physicalUplodedImagesPath + fileName);
 

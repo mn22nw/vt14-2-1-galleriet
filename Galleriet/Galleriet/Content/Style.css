@@ -58,14 +58,15 @@ img {
 #bigImageDiv {
      float:left;
      width:600px;
-     height:400px;
+     min-height:500px;
+     height:100% auto !important;
      max-width:100%;
      margin-bottom:20px;
 
 }
 #bigImage {
-    width:100%;
-    max-height:400px;
+    max-height:500px;
+    min-height:400px;
 }
 .imgButtons {
     margin:5px; 
