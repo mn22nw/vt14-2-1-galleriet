@@ -17,8 +17,10 @@
     margin:0 auto;
     background:#FFF;
     padding:15px 20px;
-    height:900px;
+    min-height:900px;
+    height:100% !important;
 }
+
 .validation-summary-errors {
      font-weight: bold;
     border: 2px solid gray;
@@ -33,6 +35,10 @@
     color:red;
 }
 
+#successMessage{
+    color:#000;
+    background:#B0FD95;
+}
 
 img {
     max-width: 100%;
@@ -48,6 +54,7 @@ img {
      width:600px;
      height:400px;
      max-width:100%;
+     margin-bottom:20px;
 
 }
 #bigImage {
@@ -62,20 +69,20 @@ img {
     height:300px;
     margin:0 auto;
     float:left;
-    width:2600px;
+
     margin-left: -2.5em;
     white-space: nowrap;
+
 }
 .images li{
-    display:inline;
+    display:inline-block;
     list-style-type: none;
-    float: left;
     
 }
 #allThumbs { 
     float:left;
-    width:600px;
     max-width:100%;
+    max-width:600px;
     margin: 0;
     padding: 0;
     overflow-y:hidden;
@@ -118,6 +125,7 @@ img {
     display:block;
     padding:20px;
     max-width:100%;
+   
 }
 fieldset {
     display:block;

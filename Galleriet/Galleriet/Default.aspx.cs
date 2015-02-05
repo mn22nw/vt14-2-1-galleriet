@@ -15,20 +15,23 @@ using System.Diagnostics;
 public partial class Default : System.Web.UI.Page
 {
     protected HtmlInputFile filMyFile;
+    private string imgDirectory = "~/Content/files/";
 
-    private Gallery _gallery;
-
-    private Gallery Gallery
-    {
-        get { return _gallery ?? (_gallery = new Gallery()); }
-
-    }
     protected void Page_Load(object sender, EventArgs e)
-    {
-        successMessage.Attributes.Add("class", "hidden");
+    {   
+        //Om session Gallery är null, initiera nytt Gallery-objekt
+        if (Gallery == null)
+            Gallery = new Gallery();
+
+       //sätt den stora bilden till den första om det finns någon / till den som är vald i url-sträng
+        get_BigImage();
+
+        //Visa ev. meddelanden för klienten (om det finns några dvs.)
+        View_Message_if_exists();
+
     }
 
-    public Gallery Gallerie
+    public Gallery Gallery
     {
         get
         {
@@ -39,16 +42,35 @@ public partial class Default : System.Web.UI.Page
             Session["Gallery"] = value;
         }
     }
+    /*
+     *Hämtar  
+     */
     public IEnumerable<string> FileRepeater_GetData() 
-    {
+    {   
         return Gallery.GetImageNames();
-        // FileRepeater.DataSource = images; // defines datasource
-        // FileRepeater.DataBind();  // binds datasourse
-
     }
     protected void ExitBtn_Click(object sender, EventArgs e)
+    {   
+        //Dölj meddelanderuta om användaren klickar på kryss-knappen
+        successMessage.Attributes.Add("class", "hidden"); 
+    }
+
+    protected void get_BigImage()
     {
-        successMessage.Attributes.Add("class", "hidden");
+        //Set big image to the first image in the files folder (if it exists)
+        
+        string name = Request.QueryString["name"];
+
+        if(!string.IsNullOrEmpty(name) ) {
+            
+            bigImage.Src = "Content/files/" + name;
+
+        }
+        else {
+            string firstImg = FileRepeater_GetData().First();
+            bigImage.Src = "Content/files/" + firstImg; 
+        }   
+       
     }
 
     protected void UploadButton_Click(object sender, EventArgs e)
@@ -56,50 +78,63 @@ public partial class Default : System.Web.UI.Page
         if (!IsValid)
         { ValidationSummary1.Attributes.Add("class", "show"); }
 
+        //Om valideringen går igenom
         if (IsValid)
         {
              try
              {
-            if (FileUpload1.PostedFile != null)
-            {
-                string path = System.IO.Path.GetFullPath(FileUpload1.PostedFile.FileName);
-                
-                System.IO.Stream fs = FileUpload1.PostedFile.InputStream;
+                if (FileUpload1.PostedFile != null)
+                {   
+                    //Hämta fullständiga sökvägen för den uppladdade filen
+                    string path = System.IO.Path.GetFullPath(FileUpload1.PostedFile.FileName);
+                    
+                    //Skapa en ny inputstream för den uppladdade filen
+                    System.IO.Stream fs = FileUpload1.PostedFile.InputStream;
 
-                string[] SucessMessage = Gallery.SaveImage(fs, FileUpload1.FileName);
-                Label1.Text = SucessMessage[0];
-                Debug.WriteLine(SucessMessage[0]);
-                Debug.WriteLine(SucessMessage[1]);
-                bigImage.Src = "~/Content/files/" + SucessMessage[1];
-                string ID = Request.QueryString[SucessMessage[1]]; 
-               // Response.Redirect("~/Default.aspx");
-                              
-             }
-             else 
-            {
-              throw new ArgumentException("Var vänlig välj en fil att ladda upp");
+                    //Spara bilden 
+                    string fileName = Gallery.SaveImage(fs, FileUpload1.FileName);
+
+                    //Sätt den stora bilden till den nya bilden
+                    bigImage.Src = imgDirectory + fileName;
+
+                    Response.Redirect("~/Default.aspx?name=" + fileName +"&message=" + Gallery.Message);
+                 }
+                 else 
+                {
+                  throw new ArgumentException("Var vänlig välj en fil att ladda upp");
+                }    
             }
 
-            Label1.CssClass = "visible";
-            successMessage.Attributes.Add("class", "visible1");
-            successMessage.Attributes.Remove("hidden");
-
-           /* HtmlControl htmlDivControl = (HtmlControl)Page.FindControl("images");
-            string ulWidth = Convert.ToString(htmlDivControl.Style["width"]);
-            htmlDivControl.Style.Add("width", (ulWidth + "200px"));
-            */
-
-        }
-        catch (Exception ex)
-         {
-             var error = new CustomValidator
+            catch (Exception ex)
              {
-                 IsValid = false,
-                 ErrorMessage = ex.Message
-             };
-             SetFocus(UploadBtn);
-             Page.Validators.Add(error);            
-         }
-            }
+                 var error = new CustomValidator
+                 {
+                     IsValid = false,
+                     ErrorMessage = ex.Message
+                 };
+                 SetFocus(UploadBtn);
+                 Page.Validators.Add(error);            
+             }
+           }
+        }
+    protected void View_Message_if_exists()
+    {
+
+
+        Label1.CssClass = "visible";
+        successMessage.Attributes.Add("class", "visible1");
+        successMessage.Attributes.Remove("hidden");
+
+        if (!string.IsNullOrWhiteSpace(Request.QueryString["message"]))
+        {
+           string message = Request.QueryString["message"].ToString();
+           Label1.Text = message;
+        }
+       
+        else 
+        {
+            //Hide old success message if reload
+              successMessage.Attributes.Add("class", "hidden");
         }
     }
+ }   
