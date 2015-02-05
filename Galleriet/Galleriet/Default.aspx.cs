@@ -23,9 +23,8 @@ public partial class Default : System.Web.UI.Page
         if (Gallery == null)
             Gallery = new Gallery();
 
-       //sätt den stora bilden till den första om det finns någon / till den som är vald i url-sträng
-        get_BigImage();
-
+        //Tilldela den stora bilden värdet för den första bilden i files mappen (om det finns någon), eller till den som är vald i url-strängen
+        View_BigImage();
         //Visa ev. meddelanden för klienten (om det finns några dvs.)
         View_Message_if_exists();
 
@@ -55,23 +54,6 @@ public partial class Default : System.Web.UI.Page
         successMessage.Attributes.Add("class", "hidden"); 
     }
 
-    protected void get_BigImage()
-    {
-        //Set big image to the first image in the files folder (if it exists)
-        
-        string name = Request.QueryString["name"];
-
-        if(!string.IsNullOrEmpty(name) ) {
-            
-            bigImage.Src = "Content/files/" + name;
-
-        }
-        else {
-            string firstImg = FileRepeater_GetData().First();
-            bigImage.Src = "Content/files/" + firstImg; 
-        }   
-       
-    }
 
     protected void UploadButton_Click(object sender, EventArgs e)
     {
@@ -84,7 +66,8 @@ public partial class Default : System.Web.UI.Page
              try
              {
                 if (FileUpload1.PostedFile != null)
-                {   
+                {
+                    
                     //Hämta fullständiga sökvägen för den uppladdade filen
                     string path = System.IO.Path.GetFullPath(FileUpload1.PostedFile.FileName);
                     
@@ -104,7 +87,18 @@ public partial class Default : System.Web.UI.Page
                   throw new ArgumentException("Var vänlig välj en fil att ladda upp");
                 }    
             }
+             catch (OutOfMemoryException )
+             {
+                 var error = new CustomValidator
+                 {
+                     IsValid = false,
+                     ErrorMessage = "Filen är för stor. Var vänlig ladda upp en fil som är max 4MB"
+                 };
+                 SetFocus(UploadBtn);
+                 Page.Validators.Add(error);
 
+                 
+             }
             catch (Exception ex)
              {
                  var error = new CustomValidator
@@ -113,28 +107,67 @@ public partial class Default : System.Web.UI.Page
                      ErrorMessage = ex.Message
                  };
                  SetFocus(UploadBtn);
-                 Page.Validators.Add(error);            
+                 Page.Validators.Add(error);
+                
              }
+
+             //Hide any previous successMessages. 
+             successMessage.Visible = false;
+             exit.Visible = false;
            }
         }
-    protected void View_Message_if_exists()
+
+    protected void View_BigImage()
     {
 
+        if (!string.IsNullOrWhiteSpace(Request.QueryString["name"]))
+        {
+            string name = Request.QueryString["name"];
+            bigImage.Src = "Content/files/" + name;
+        }
 
-        Label1.CssClass = "visible";
-        successMessage.Attributes.Add("class", "visible1");
-        successMessage.Attributes.Remove("hidden");
+        else
+        {
+            string firstImg = FileRepeater_GetData().First();
+            bigImage.Src = "Content/files/" + firstImg;
+        }
+
+    }
+
+    protected void View_Message_if_exists()
+    {
+        successMessage.Visible = false;
+        exit.Visible = false;
 
         if (!string.IsNullOrWhiteSpace(Request.QueryString["message"]))
         {
-           string message = Request.QueryString["message"].ToString();
-           Label1.Text = message;
+            Label1.CssClass = "visible";
+            successMessage.Visible = true;
+            exit.Visible = true;
+            successMessage.Attributes.Remove("hidden");
+
+            string message = Request.QueryString["message"].ToString();
+             Label1.Text = message;
         }
        
-        else 
-        {
-            //Hide old success message if reload
-              successMessage.Attributes.Add("class", "hidden");
-        }
     }
+
+    protected void checkfilesize(object source, ServerValidateEventArgs args)
+    {
+        string data = args.Value;
+        args.IsValid = false;
+        double filesize = FileUpload1.FileContent.Length;
+        
+        if (filesize > 5000)
+        {
+            args.IsValid = false;
+        }
+        else
+        {
+            args.IsValid = true;
+        }
+
+        //http://www.codeproject.com/Tips/290098/Asp-Net-Custom-Validator-Control-to-validate-file
+    }
+    
  }   

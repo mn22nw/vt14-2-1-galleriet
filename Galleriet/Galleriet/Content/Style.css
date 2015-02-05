@@ -19,6 +19,7 @@
     padding:15px 20px;
     min-height:900px;
     height:100% !important;
+    margin-bottom: 0;
 }
 
 .validation-summary-errors {
@@ -38,6 +39,11 @@
 #successMessage{
     color:#000;
     background:#B0FD95;
+    display:block;
+    padding:20px;
+    max-width:100%;
+    margin-bottom:20px;
+    border:1px solid #000;
 }
 
 img {

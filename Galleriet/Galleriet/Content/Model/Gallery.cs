@@ -51,7 +51,7 @@ namespace Galleriet.Model
          */
         public IEnumerable<string> GetImageNames()
         {
-            DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath("~/Content/files/"));
+            DirectoryInfo di = new DirectoryInfo(physicalUplodedImagesPath);
             IEnumerable<string> imagesOrdered = di.GetFiles().Select(file => file.Name).OrderBy(item => item);
 
             return imagesOrdered;
@@ -99,6 +99,8 @@ namespace Galleriet.Model
          */
         public string SaveImage(Stream stream, string fileName)
         {
+            nameChange = false;
+
             //Ta bort/rensa otillåtna tecken i filnamnet
             fileName = SanitizePath.Replace(fileName, "1");
 
@@ -113,11 +115,11 @@ namespace Galleriet.Model
 
 
             Image image = Image.FromStream(stream);
-            image.Save(HttpContext.Current.Server.MapPath("~/Content/files/" + fileName));
+            image.Save(physicalUplodedImagesPath + fileName);
 
             //GENERERA THUMBNAIL
             Image thumbnail = image.GetThumbnailImage(120, 90, null, System.IntPtr.Zero);
-            thumbnail.Save(HttpContext.Current.Server.MapPath("~/Content/files/thumbs/" + "thumb" + fileName));
+            thumbnail.Save(physicalUplodedImagesPath + "/thumbs/thumb" + fileName);
             stream.Close();
 
             if (!nameChange) 
@@ -135,23 +137,21 @@ namespace Galleriet.Model
                 string tempfileName = "";
                 string withoutEx = Path.GetFileNameWithoutExtension(fileName);
                 string withEx = Path.GetExtension(fileName);
-
                 int counter = 1;
 
                 //För varje filnamn som existerar så läggs en siffra inom parantes till på slutet ex. bild(1).jpg
                 while (ImageExists(fileName))
                 {
                     tempfileName = withoutEx + "(" + counter.ToString() + ")" + withEx;
-                    //fileName = physicalUplodedImagesPath + tempfileName;
                     counter++;
                     fileName = tempfileName;
                 }
 
                 //meddela klienten att filnamnet har ändrats (spara i session) 
                 _message = "En fil med samma namn fanns redan. Filen sparades som " + fileName + ".";
-               
+                nameChange = true;
             }
-            nameChange = true;
+            
             return fileName;
         }
 
